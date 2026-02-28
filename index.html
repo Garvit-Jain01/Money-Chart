@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartFinance AI - Premium Apple Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Common Blurs & Transitions */
+            --glass-blur: blur(25px) saturate(180%);
+            --theme-transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                               color 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                               box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                               border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                               backdrop-filter 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+            /* Themed Glow Colors */
+            --glow-blue: rgba(59, 130, 246, 0.3);
+            --glow-purple: rgba(168, 85, 247, 0.3);
+            --glow-cyan: rgba(6, 182, 212, 0.3);
+            --glow-green: rgba(34, 197, 94, 0.3);
+            --glow-orange: rgba(245, 158, 11, 0.3);
+            --glow-pink: rgba(236, 72, 153, 0.3);
+            --glow-indigo: rgba(99, 102, 241, 0.3);
+        }
+
+        /* DARK THEME */
+        [data-theme="dark"] {
+            --app-bg: linear-gradient(135deg, #0b1020 0%, #1e293b 50%, #0f172a 100%);
+            --nav-bg: rgba(15, 23, 42, 0.5);
+            --text-primary: #ffffff;
+            --text-secondary: #cbd5e1;
+            --text-muted: #64748b;
+            --glass-bg: rgba(255, 255, 255, 0.04);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            --input-bg: rgba(255, 255, 255, 0.05);
+            --input-border: rgba(255, 255, 255, 0.1);
+            --menu-item-bg: rgba(255, 255, 255, 0.05);
+            --menu-item-active: rgba(255, 255, 255, 0.12);
+            --tint-green: rgba(34, 197, 94, 0.12);
+            --tint-yellow: rgba(234, 179, 8, 0.12);
+            --tint-red: rgba(239, 68, 68, 0.12);
+            --card-subtle-bg: rgba(255, 255, 255, 0.02);
+            --table-header-bg: rgba(255, 255, 255, 0.03);
+        }
+
+        /* LIGHT THEME */
+        [data-theme="light"] {
+            --app-bg: linear-gradient(135deg, #f6f8fb 0%, #e9eef5 100%);
+            --nav-bg: rgba(255, 255, 255, 0.4);
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --glass-bg: rgba(255, 255, 255, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.08);
+            --input-bg: rgba(255, 255, 255, 0.7);
+            --input-border: rgba(0, 0, 0, 0.08);
+            --menu-item-bg: rgba(255, 255, 255, 0.3);
+            --menu-item-active: rgba(255, 255, 255, 0.8);
+            --tint-green: rgba(34, 197, 94, 0.15);
+            --tint-yellow: rgba(234, 179, 8, 0.15);
+            --tint-red: rgba(239, 68, 68, 0.15);
+            --card-subtle-bg: rgba(255, 255, 255, 0.4);
+            --table-header-bg: rgba(0, 0, 0, 0.02);
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--app-bg);
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            transition: var(--theme-transition);
+        }
+
+        /* Universal Glass Utility */
+        .apple-glass {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            border-radius: 24px;
+            transition: var(--theme-transition), transform 0.3s ease;
+        }
+
+        .apple-nav {
+            background: var(--nav-bg);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-right: 1px solid var(--glass-border);
+            transition: var(--theme-transition);
+        }
+
+        /* Floating Menu Item */
+        .glass-menu-item {
+            background: var(--menu-item-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            padding: 14px 20px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: var(--theme-transition), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            color: var(--text-muted);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .glass-menu-item:hover {
+            transform: translateY(-3px);
+            background: var(--menu-item-active);
+            color: var(--text-primary);
+        }
+
+        .glass-menu-item.active {
+            background: var(--menu-item-active);
+            color: var(--text-primary);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            font-weight: 700;
+        }
+
+        /* Glow Effects */
+        .glow-blue:hover, .glow-blue.active { box-shadow: 0 8px 25px var(--glow-blue); }
+        .glow-purple:hover, .glow-purple.active { box-shadow: 0 8px 25px var(--glow-purple); }
+        .glow-cyan:hover, .glow-cyan.active { box-shadow: 0 8px 25px var(--glow-cyan); }
+        .glow-green:hover, .glow-green.active { box-shadow: 0 8px 25px var(--glow-green); }
+        .glow-orange:hover, .glow-orange.active { box-shadow: 0 8px 25px var(--glow-orange); }
+        .glow-pink:hover, .glow-pink.active { box-shadow: 0 8px 25px var(--glow-pink); }
+        .glow-indigo:hover, .glow-indigo.active { box-shadow: 0 8px 25px var(--glow-indigo); }
+
+        .apple-input {
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            color: var(--text-primary);
+            transition: var(--theme-transition);
+        }
+        .apple-input:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+            outline: none;
+        }
+
+        /* Status Tints */
+        .glass-tint-green { background: var(--tint-green); backdrop-filter: var(--glass-blur); border: 1px solid rgba(34, 197, 94, 0.2); }
+        .glass-tint-yellow { background: var(--tint-yellow); backdrop-filter: var(--glass-blur); border: 1px solid rgba(234, 179, 8, 0.2); }
+        .glass-tint-red { background: var(--tint-red); backdrop-filter: var(--glass-blur); border: 1px solid rgba(239, 68, 68, 0.2); }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .tab-content {
+            animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(100, 116, 139, 0.2); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(100, 116, 139, 0.4); }
+
+        /* Utility for Text Colors that respect theme */
+        .text-primary { color: var(--text-primary); }
+        .text-secondary { color: var(--text-secondary); }
+        .text-muted { color: var(--text-muted); }
+        .bg-subtle { background-color: var(--card-subtle-bg); }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "react": "https://esm.sh/react@^19.2.4",
+    "@google/genai": "https://esm.sh/@google/genai@^1.40.0",
+    "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
+    "recharts": "https://esm.sh/recharts@^3.7.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body>
+    <div id="root"></div>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>

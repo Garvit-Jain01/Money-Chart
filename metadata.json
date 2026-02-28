@@ -1,0 +1,6 @@
+
+{
+  "name": "SmartFinance AI",
+  "description": "An intelligent personal finance manager featuring goal-based savings advice, visual analytics, and budget monitoring powered by Gemini.",
+  "requestFramePermissions": []
+}
