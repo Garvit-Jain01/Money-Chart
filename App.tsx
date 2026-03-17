@@ -143,7 +143,7 @@ const App: React.FC = () => {
             <div className="bg-indigo-500/20 p-2.5 rounded-2xl text-indigo-500 shadow-lg border border-indigo-400/20">
               <BrainCircuit size={28} />
             </div>
-            <h1 className="text-2xl font-black tracking-tight text-primary">SmartFinance</h1>
+            <h1 className="text-2xl font-black tracking-tight text-primary">MoneyChart</h1>
           </div>
           <p className="text-[10px] text-muted font-black uppercase tracking-[0.25em] ml-1">Intelligence Advisor</p>
         </div>
