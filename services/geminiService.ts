@@ -32,7 +32,7 @@ export const getSmartFinancialAdvice = async (
     try {
       return await Promise.race([
         ai.models.generateContent({
-          model: "gemini-1.5-pro", // ✅ more stable for structured output
+          model: "gemini-1.5-flash", // ✅ more stable for structured output
           contents: prompt,
           config: {
             responseMimeType: "application/json",
