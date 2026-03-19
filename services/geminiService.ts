@@ -26,7 +26,7 @@ export const getSmartFinancialAdvice = async (
 
   // Fix: Use gemini-3-pro-preview for complex reasoning and mathematical analysis
   const response = await ai.models.generateContent({
-    model: "gemini-3-pro-preview",
+    model: "gemini-2.5-flash",
     contents: prompt,
     config: {
       responseMimeType: "application/json",
