@@ -1,7 +1,7 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { Transaction, Goal, AdvisorResponse } from "../types";
 
-const MODEL = "gemini-2.5-flash-preview-04-17";
+const MODEL = "gemini-2.5-flash";
 const TIMEOUT_MS = 40000;       // 40s — 2.5-flash needs more time
 const MAX_RETRIES = 3;
 const RETRY_BASE_DELAY_MS = 3000; // 3s → 6s → 9s
