@@ -1,13 +1,30 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { Transaction, Goal, AdvisorResponse } from "../types";
 
+const MODEL = "gemini-2.5-flash-preview-04-17";
+const TIMEOUT_MS = 40000;       // 40s — 2.5-flash needs more time
+const MAX_RETRIES = 3;
+const RETRY_BASE_DELAY_MS = 3000; // 3s → 6s → 9s
+
+const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+
 export const getSmartFinancialAdvice = async (
   transactions: Transaction[],
   goal: Goal
 ): Promise<AdvisorResponse> => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  // Use import.meta.env for Vite, fallback to process.env for Node/SSR
+  const apiKey =
+    (typeof import.meta !== "undefined" && (import.meta as any).env?.VITE_GEMINI_API_KEY) ||
+    process.env.GEMINI_API_KEY ||
+    "";
 
-  // ✅ Reduce payload size (important)
+  if (!apiKey) {
+    throw new Error("Gemini API key is missing. Set VITE_GEMINI_API_KEY in your .env file.");
+  }
+
+  const ai = new GoogleGenAI({ apiKey });
+
+  // Limit payload — only last 30 transactions
   const recentTransactions = transactions.slice(-30);
 
   const prompt = `
@@ -27,12 +44,11 @@ export const getSmartFinancialAdvice = async (
     Classify the goal feasibility as 'achievable', 'difficult', or 'unrealistic'.
   `;
 
-  // ✅ Retry wrapper
-  const callAI = async (retries = 3): Promise<any> => {
+  const callAI = async (retries = MAX_RETRIES): Promise<any> => {
     try {
       return await Promise.race([
         ai.models.generateContent({
-          model: "gemini-2.5-flash", // ✅ more stable for structured output
+          model: MODEL,
           contents: prompt,
           config: {
             responseMimeType: "application/json",
@@ -62,12 +78,7 @@ export const getSmartFinancialAdvice = async (
                       impactAmount: { type: Type.NUMBER },
                       reasoning: { type: Type.STRING },
                     },
-                    required: [
-                      "category",
-                      "suggestion",
-                      "impactAmount",
-                      "reasoning",
-                    ],
+                    required: ["category", "suggestion", "impactAmount", "reasoning"],
                   },
                 },
               },
@@ -81,16 +92,21 @@ export const getSmartFinancialAdvice = async (
             },
           },
         }),
-        // ✅ Timeout protection
+        // Timeout protection — 40s for 2.5-flash
         new Promise((_, reject) =>
-          setTimeout(() => reject(new Error("Request timeout")), 10000)
+          setTimeout(() => reject(new Error("Request timeout")), TIMEOUT_MS)
         ),
       ]);
-    } catch (err) {
+    } catch (err: any) {
+      console.error(`Attempt failed (${MAX_RETRIES - retries + 1}/${MAX_RETRIES}):`, err?.message || err);
+
       if (retries > 0) {
-        console.log(`Retrying... (${retries})`);
+        const waitMs = (MAX_RETRIES - retries + 1) * RETRY_BASE_DELAY_MS; // 3s, 6s, 9s
+        console.log(`Retrying in ${waitMs / 1000}s... (${retries} left)`);
+        await delay(waitMs);
         return callAI(retries - 1);
       }
+
       throw err;
     }
   };
@@ -98,15 +114,20 @@ export const getSmartFinancialAdvice = async (
   try {
     const response = await callAI();
 
-    // ✅ Clean JSON response
-    const cleanText = response.text
+    // 2.5-flash with responseMimeType returns clean JSON — no fences needed
+    // but we clean just in case
+    const rawText: string = typeof response.text === "function"
+      ? response.text()
+      : response.text;
+
+    const cleanText = rawText
       .replace(/```json/g, "")
       .replace(/```/g, "")
       .trim();
 
     return JSON.parse(cleanText) as AdvisorResponse;
-  } catch (e) {
-    console.error("Failed to parse AI response", e);
-    throw new Error("Could not process financial advice at this time.");
+  } catch (e: any) {
+    console.error("Failed to get financial advice:", e?.message || e);
+    throw new Error("Could not process financial advice at this time. Please try again.");
   }
 };
